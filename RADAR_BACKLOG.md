@@ -13,7 +13,7 @@ Daftar backlog berikut adalah tugas-tugas terukur dan atomik untuk dieksekusi se
   - Gold (XAU/USD) & Real Yields correlation.
   - Crypto (BTC/USD, ETH/USD) macro liquidity indicator.
   - Komoditas Energi & Ekspor RI: Brent Oil, Batubara (Newcastle), CPO.
-- [ ] **TASK-003 (MACRO/BACKEND):** Bangun API Engine `/api/opportunity-radar`:
+- [x] **TASK-003 (MACRO/BACKEND):** Bangun API Engine `/api/opportunity-radar`:
   - Algoritma penentuan Macro Regime (Expansive, Stagnant, Inflationary Shock, Tightening).
   - Matriks Dampak Aset: Forex, Crypto, Gold, Komoditas, Saham IHSG/Global.
   - Identifikasi Sektor/Entitas yang Diuntungkan (Winners) vs Dirugikan (Losers).

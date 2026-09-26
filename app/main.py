@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from app.database import DBContext, init_db
 from app.collectors.indicators import sync_indicators
 from app.collectors.cross_asset import sync_cross_asset, get_cross_asset_summary
+from app.collectors.opportunity_radar import build_opportunity_radar, get_opportunity_radar_data
 from app.collectors.news_rss import sync_rss_news
 from app.collectors.briefing import sync_calendar, update_macro_briefing
 from app.scheduler import start_scheduler, stop_scheduler, run_all_jobs
@@ -47,8 +48,9 @@ async def lifespan(app: FastAPI):
 
     try:
         sync_cross_asset()
+        build_opportunity_radar()
     except Exception as e:
-        logger.error(f"Error during initial cross-asset sync: {e}")
+        logger.error(f"Error during initial cross-asset / opportunity radar sync: {e}")
         
     start_scheduler()
     yield
@@ -286,6 +288,12 @@ def get_indicators(user: dict = Depends(get_current_user)):
         logger.warning(f"Failed to attach cross-asset summary to nexus: {e}")
         nexus["cross_asset"] = {}
     
+    try:
+        nexus["opportunity_radar"] = get_opportunity_radar_data()
+    except Exception as e:
+        logger.warning(f"Failed to attach opportunity radar to nexus: {e}")
+        nexus["opportunity_radar"] = {}
+    
     return {
         "all": rows,
         "indonesia": indo,
@@ -306,6 +314,21 @@ def get_cross_asset(user: dict = Depends(get_current_user)):
     return {
         "status": "ok",
         "data": get_cross_asset_summary()
+    }
+
+@app.get("/api/opportunity-radar")
+def get_opportunity_radar_endpoint(user: dict = Depends(get_current_user)):
+    """
+    Mengembalikan data Opportunity & Action Radar:
+    - Macro Regime (Expansive, Stagnant, Inflationary Shock, Tightening)
+    - Asset Impact Matrix (+100 to -100)
+    - Winners & Losers sectors
+    - Actionable Decisions (Life, Trading, Real Business)
+    """
+    data = get_opportunity_radar_data()
+    return {
+        "status": "ok",
+        "radar": data
     }
 
 @app.get("/api/news")

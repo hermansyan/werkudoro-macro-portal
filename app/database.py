@@ -171,6 +171,16 @@ def init_db():
         );
         CREATE INDEX IF NOT EXISTS idx_macro_cross_asset_cat ON macro.cross_asset_analytics(category);
         """)
+
+        # 8. Opportunity Radar table
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS macro.opportunity_radar (
+            id TEXT PRIMARY KEY,
+            regime_id TEXT NOT NULL,
+            data JSONB NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+        """)
     logger.info("PostgreSQL database tables initialized in schema 'macro'.")
 
 if __name__ == "__main__":
