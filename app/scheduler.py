@@ -1,6 +1,7 @@
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.collectors.indicators import sync_indicators
+from app.collectors.cross_asset import sync_cross_asset
 from app.collectors.news_rss import sync_rss_news
 from app.collectors.briefing import sync_calendar, update_macro_briefing
 
@@ -14,6 +15,11 @@ def run_all_jobs():
         sync_indicators()
     except Exception as e:
         logger.error(f"Error syncing indicators: {e}")
+
+    try:
+        sync_cross_asset()
+    except Exception as e:
+        logger.error(f"Error syncing cross-asset metrics: {e}")
         
     try:
         sync_rss_news()

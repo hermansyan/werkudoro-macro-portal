@@ -22,7 +22,7 @@ def get_next_task():
         return None
 
     content = BACKLOG_FILE.read_text(encoding="utf-8")
-    match = re.search(r"- \[ \] \*\*(TASK-\d+)\s*\(([^)]+)\)\*\*:\s*(.+)", content)
+    match = re.search(r"- \[ \] \*\*(TASK-\d+)\s*\(([^)]+)\):?\*\*:?\s*(.+)", content)
     if match:
         return {
             "task_id": match.group(1),
@@ -37,12 +37,21 @@ def run_cmd(cmd, cwd=REPO_DIR):
 
 def run_qa_gate():
     print("[*] Menjalankan QA Gate Verification...")
-    # Jalankan pytest dan syntax linting sederhana
-    code, out, err = run_cmd("python3 -m py_compile app/main.py app/database.py app/scheduler.py")
+    python_bin = "/home/hermes/macro-env/bin/python3" if Path("/home/hermes/macro-env/bin/python3").exists() else "python3"
+    
+    # 1. Syntax & compilation check
+    code, out, err = run_cmd(f"{python_bin} -m py_compile app/main.py app/database.py app/scheduler.py app/collectors/indicators.py app/collectors/cross_asset.py")
     if code != 0:
         print(f"[-] Python compilation error:\n{err}")
         return False
     print("[+] Python compilation: PASS")
+
+    # 2. Automated test suite execution
+    code, out, err = run_cmd(f"PYTHONPATH=. {python_bin} -m unittest discover -s tests -p 'test_*.py'")
+    if code != 0:
+        print(f"[-] QA Test Suite failed:\n{out}\n{err}")
+        return False
+    print("[+] QA Automated Test Suite: PASS (All tests OK)")
     return True
 
 def main():

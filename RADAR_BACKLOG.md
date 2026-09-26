@@ -9,7 +9,7 @@ Daftar backlog berikut adalah tugas-tugas terukur dan atomik untuk dieksekusi se
 ## Sprint 1: Macro Matrix & Opportunity Radar (Core Intelligence)
 
 - [x] **TASK-001 (DEVOPS/CTO):** Inisialisasi arsitektur multi-agent `synt-wrkdr-1`, Git repo GitHub, dan SOP Company Charter.
-- [ ] **TASK-002 (MACRO/BACKEND):** Tambahkan Cross-Asset Collector:
+- [x] **TASK-002 (MACRO/BACKEND):** Tambahkan Cross-Asset Collector:
   - Gold (XAU/USD) & Real Yields correlation.
   - Crypto (BTC/USD, ETH/USD) macro liquidity indicator.
   - Komoditas Energi & Ekspor RI: Brent Oil, Batubara (Newcastle), CPO.

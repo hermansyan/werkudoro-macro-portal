@@ -157,6 +157,20 @@ def init_db():
         );
         CREATE INDEX IF NOT EXISTS idx_macro_sessions_tok ON macro.sessions(token);
         """)
+
+        # 7. Cross-Asset Analytics table
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS macro.cross_asset_analytics (
+            id TEXT PRIMARY KEY,
+            category TEXT NOT NULL,
+            title TEXT NOT NULL,
+            metrics JSONB NOT NULL,
+            insights TEXT[] NOT NULL,
+            signal TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_macro_cross_asset_cat ON macro.cross_asset_analytics(category);
+        """)
     logger.info("PostgreSQL database tables initialized in schema 'macro'.")
 
 if __name__ == "__main__":

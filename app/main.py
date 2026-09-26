@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from app.database import DBContext, init_db
 from app.collectors.indicators import sync_indicators
+from app.collectors.cross_asset import sync_cross_asset, get_cross_asset_summary
 from app.collectors.news_rss import sync_rss_news
 from app.collectors.briefing import sync_calendar, update_macro_briefing
 from app.scheduler import start_scheduler, stop_scheduler, run_all_jobs
@@ -43,6 +44,11 @@ async def lifespan(app: FastAPI):
         sync_calendar()
         sync_rss_news()
         update_macro_briefing()
+
+    try:
+        sync_cross_asset()
+    except Exception as e:
+        logger.error(f"Error during initial cross-asset sync: {e}")
         
     start_scheduler()
     yield
@@ -274,6 +280,12 @@ def get_indicators(user: dict = Depends(get_current_user)):
         ]
     }
     
+    try:
+        nexus["cross_asset"] = get_cross_asset_summary()
+    except Exception as e:
+        logger.warning(f"Failed to attach cross-asset summary to nexus: {e}")
+        nexus["cross_asset"] = {}
+    
     return {
         "all": rows,
         "indonesia": indo,
@@ -286,6 +298,14 @@ def get_indicators(user: dict = Depends(get_current_user)):
         },
         "commodities": commodities,
         "nexus": nexus
+    }
+
+@app.get("/api/cross-asset")
+def get_cross_asset(user: dict = Depends(get_current_user)):
+    """Mengembalikan metrik dan analisis korelasi lintas aset (Cross-Asset Intelligence)."""
+    return {
+        "status": "ok",
+        "data": get_cross_asset_summary()
     }
 
 @app.get("/api/news")

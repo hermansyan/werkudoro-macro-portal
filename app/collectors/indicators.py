@@ -19,6 +19,8 @@ YAHOO_SYMBOLS = {
     "NATURAL_GAS": {"symbol": "NG=F", "name": "Gas Alam (Natural Gas)", "cat": "Komoditas", "region": "Komoditas", "unit": "USD/MMBtu", "desc": "Harga kontrak berjangka gas alam internasional"},
     "GOLD": {"symbol": "GC=F", "name": "Emas Spot Dunia (Gold)", "cat": "Komoditas", "region": "Komoditas", "unit": "USD/toz", "desc": "Harga spot emas internasional per troy ounce"},
     "BTC_USD": {"symbol": "BTC-USD", "name": "Bitcoin / USD", "cat": "Likuiditas Global", "region": "Global", "unit": "USD", "desc": "Aset digital barometer selera risiko (risk appetite) & likuiditas global"},
+    "ETH_USD": {"symbol": "ETH-USD", "name": "Ethereum / USD", "cat": "Likuiditas Global", "region": "Global", "unit": "USD", "desc": "Aset smart contract & proxy likuiditas / risk-on global"},
+    "US_TIPS_10Y": {"symbol": "TIP", "name": "iShares TIPS Bond ETF", "cat": "Obligasi", "region": "Amerika Serikat", "unit": "USD", "desc": "Proxy instrumen Treasury Inflation-Protected Securities (Real Yields)"},
     "USD_JPY": {"symbol": "JPY=X", "name": "Kurs USD / JPY", "cat": "Valas & Kurs", "region": "Jepang", "unit": "JPY", "desc": "Nilai tukar Dolar AS terhadap Yen Jepang"},
     "GBP_USD": {"symbol": "GBPUSD=X", "name": "Kurs GBP / USD", "cat": "Valas & Kurs", "region": "Inggris", "unit": "USD", "desc": "Nilai tukar Poundsterling terhadap Dolar AS"},
     "USD_CNY": {"symbol": "CNY=X", "name": "Kurs USD / CNY", "cat": "Valas & Kurs", "region": "China", "unit": "CNY", "desc": "Nilai tukar Dolar AS terhadap Yuan China"},
