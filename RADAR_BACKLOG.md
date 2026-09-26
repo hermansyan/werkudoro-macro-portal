@@ -21,7 +21,7 @@ Daftar backlog berikut adalah tugas-tugas terukur dan atomik untuk dieksekusi se
   - Tampilan Institutional Terminal dengan tabular numbers.
   - Ringkasan Aksi: Keputusan Hidup (Saving/Cash ratio), Keputusan Trading (Aset berpotensi), Keputusan Bisnis Riil (Ekspansi/Hedging valas).
   - Tampilan responsif mobile thumb-dock tanpa horizontal sway.
-- [ ] **TASK-005 (QA):** Buat E2E Automated Verification Test Suite (Playwright + Pytest):
+- [x] **TASK-005 (QA):** Buat E2E Automated Verification Test Suite (Playwright + Pytest):
   - Uji validasi endpoint data `/api/opportunity-radar`.
   - Uji visual snapshot rendering UI desktop & mobile.
   - Verifikasi stop signal (tolak deploy jika ada runtime exception atau broken UI).
