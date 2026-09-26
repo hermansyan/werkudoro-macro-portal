@@ -1,0 +1,16 @@
+[Unit]
+Description=Werkudoro Macroeconomic Intelligence Portal
+After=network.target
+
+[Service]
+Type=simple
+User=hermes
+WorkingDirectory=/home/hermes/macro-portal
+Environment="PYTHONPATH=/home/hermes/macro-portal"
+EnvironmentFile=/home/hermes/macro-portal/.env
+ExecStart=/home/hermes/macro-env/bin/python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
