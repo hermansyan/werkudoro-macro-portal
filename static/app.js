@@ -93,10 +93,10 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// Tab Nav: Switch between Nexus, Indonesia, Advanced, Commodities, News
+// Tab Nav: Switch between Nexus, Radar, Indonesia, Advanced, Commodities, News
 function switchMacroTab(tabId) {
   state.activeMainTab = tabId;
-  const tabs = ['nexus', 'indonesia', 'advanced', 'commodities', 'news'];
+  const tabs = ['nexus', 'radar', 'indonesia', 'advanced', 'commodities', 'news'];
 
   tabs.forEach(t => {
     // Desktop Tab buttons
@@ -142,6 +142,7 @@ function switchMacroTab(tabId) {
 
 function capitalize(s) {
   if (s === 'nexus') return 'Nexus';
+  if (s === 'radar') return 'Radar';
   if (s === 'indonesia') return 'Indonesia';
   if (s === 'advanced') return 'Advanced';
   if (s === 'commodities') return 'Commodities';
@@ -318,6 +319,7 @@ async function fetchIndicators() {
     state.indicators = data;
 
     renderNexusView();
+    renderOpportunityRadarView();
     renderIndonesiaView();
     renderAdvancedEconomiesView();
     renderCommoditiesView();
@@ -409,6 +411,216 @@ function renderNexusView() {
       </div>
     `).join('');
   }
+}
+
+// Opportunity & Action Radar View Renderer
+function renderOpportunityRadarView() {
+  const radar = (state.indicators && state.indicators.nexus && state.indicators.nexus.opportunity_radar) 
+                ? state.indicators.nexus.opportunity_radar 
+                : null;
+  if (!radar || !radar.regime) return;
+
+  const regime = radar.regime;
+  const metrics = regime.metrics || {};
+  const matrix = radar.asset_impact_matrix || [];
+  const winners = (radar.winners_and_losers && radar.winners_and_losers.winners) || [];
+  const losers = (radar.winners_and_losers && radar.winners_and_losers.losers) || [];
+  const actions = radar.actionable_decisions || {};
+
+  // 1. Regime Header & Telemetry
+  const badgeEl = document.getElementById('radarRegimeBadge');
+  const titleEl = document.getElementById('radarRegimeTitle');
+  const descEl = document.getElementById('radarRegimeDesc');
+  const recEl = document.getElementById('radarPrimaryRec');
+  const timeEl = document.getElementById('radarTimestamp');
+
+  if (badgeEl) {
+    badgeEl.innerText = regime.regime_id || 'UNKNOWN';
+    if (regime.regime_id === 'EXPANSIVE') {
+      badgeEl.className = 'text-[11px] font-mono-numbers font-bold px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300';
+    } else if (regime.regime_id === 'INFLATIONARY_SHOCK') {
+      badgeEl.className = 'text-[11px] font-mono-numbers font-bold px-2.5 py-1 rounded bg-rose-950/60 border border-rose-800 text-rose-300';
+    } else if (regime.regime_id === 'TIGHTENING') {
+      badgeEl.className = 'text-[11px] font-mono-numbers font-bold px-2.5 py-1 rounded bg-amber-950/60 border border-amber-800 text-amber-300';
+    } else {
+      badgeEl.className = 'text-[11px] font-mono-numbers font-bold px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-800 text-cyan-300';
+    }
+  }
+
+  if (titleEl) titleEl.innerText = regime.name || '-';
+  if (descEl) descEl.innerText = regime.description || '-';
+  if (recEl) recEl.innerText = regime.primary_recommendation || '-';
+  if (timeEl && radar.timestamp) {
+    timeEl.innerText = `Updated: ${radar.timestamp.slice(0, 16).replace('T', ' ')} UTC`;
+  }
+
+  const usRealEl = document.getElementById('radarMetricUSReal');
+  const idRealEl = document.getElementById('radarMetricIDReal');
+  const dxyEl = document.getElementById('radarMetricDXY');
+  const vixEl = document.getElementById('radarMetricVIX');
+
+  if (usRealEl && metrics.real_rate_us !== undefined) usRealEl.innerText = `${metrics.real_rate_us > 0 ? '+' : ''}${metrics.real_rate_us}%`;
+  if (idRealEl && metrics.real_rate_indo !== undefined) idRealEl.innerText = `${metrics.real_rate_indo > 0 ? '+' : ''}${metrics.real_rate_indo}%`;
+  if (dxyEl && metrics.dxy !== undefined) dxyEl.innerText = metrics.dxy.toFixed(2);
+  if (vixEl && metrics.vix !== undefined) vixEl.innerText = metrics.vix.toFixed(2);
+
+  // 2. Asset Impact Matrix Table
+  const tableBody = document.getElementById('radarMatrixTableBody');
+  if (tableBody) {
+    if (matrix.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-[var(--text-muted)]">Data matriks aset tidak tersedia.</td></tr>';
+    } else {
+      tableBody.innerHTML = matrix.map(item => {
+        let stanceBadge = 'badge-neutral';
+        let scoreColor = 'text-[var(--text-primary)]';
+        let barColor = 'bg-cyan-500';
+
+        if (item.score >= 50) {
+          stanceBadge = 'badge-gain';
+          scoreColor = 'text-emerald-400 font-bold';
+          barColor = 'bg-emerald-500';
+        } else if (item.score > 0) {
+          stanceBadge = 'badge-gain';
+          scoreColor = 'text-emerald-400';
+          barColor = 'bg-teal-500';
+        } else if (item.score === 0) {
+          stanceBadge = 'badge-neutral';
+          scoreColor = 'text-[var(--text-muted)]';
+          barColor = 'bg-slate-500';
+        } else if (item.score > -50) {
+          stanceBadge = 'badge-loss';
+          scoreColor = 'text-rose-400';
+          barColor = 'bg-rose-500';
+        } else {
+          stanceBadge = 'badge-loss';
+          scoreColor = 'text-rose-500 font-bold';
+          barColor = 'bg-rose-600';
+        }
+
+        const scoreSign = item.score > 0 ? '+' : '';
+        const pctWidth = Math.min(100, Math.abs(item.score));
+
+        return `
+          <tr class="hover:bg-[var(--bg-hover)] transition-colors">
+            <td class="py-2.5 px-2.5 font-semibold text-[var(--text-primary)]">
+              ${item.asset}
+            </td>
+            <td class="py-2.5 px-2.5 text-[11px] text-[var(--text-muted)]">
+              ${item.category}
+            </td>
+            <td class="py-2.5 px-2.5 text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <span class="${scoreColor} w-10 text-right">${scoreSign}${item.score}</span>
+                <div class="w-16 bg-[var(--bg-subtle)] h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)] hidden sm:block">
+                  <div class="${barColor} h-full" style="width: ${pctWidth}%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="py-2.5 px-2.5">
+              <span class="px-2 py-0.5 rounded text-[10px] ${stanceBadge} font-medium">
+                ${item.stance}
+              </span>
+            </td>
+            <td class="py-2.5 px-2.5 text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">
+              ${item.driver}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
+
+  // 3. Winners & Losers
+  const winnersContainer = document.getElementById('radarWinnersList');
+  if (winnersContainer) {
+    if (winners.length === 0) {
+      winnersContainer.innerHTML = '<div class="text-[11px] text-[var(--text-muted)]">Tidak ada data sektor diuntungkan.</div>';
+    } else {
+      winnersContainer.innerHTML = winners.map(w => `
+        <div class="p-2 rounded bg-[var(--bg-subtle)] border border-[var(--border-subtle)] space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-emerald-400 font-mono-numbers">${w.sector}</span>
+            <span class="text-[9px] font-mono-numbers px-1.5 py-0.2 rounded bg-emerald-950/50 text-emerald-300 border border-emerald-800">${w.impact_tag || 'WINNER'}</span>
+          </div>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">${w.reason}</p>
+        </div>
+      `).join('');
+    }
+  }
+
+  const losersContainer = document.getElementById('radarLosersList');
+  if (losersContainer) {
+    if (losers.length === 0) {
+      losersContainer.innerHTML = '<div class="text-[11px] text-[var(--text-muted)]">Tidak ada data sektor dirugikan.</div>';
+    } else {
+      losersContainer.innerHTML = losers.map(l => `
+        <div class="p-2 rounded bg-[var(--bg-subtle)] border border-[var(--border-subtle)] space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-rose-400 font-mono-numbers">${l.sector}</span>
+            <span class="text-[9px] font-mono-numbers px-1.5 py-0.2 rounded bg-rose-950/50 text-rose-300 border border-rose-800">${l.impact_tag || 'LOSER'}</span>
+          </div>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">${l.reason}</p>
+        </div>
+      `).join('');
+    }
+  }
+
+  // 4. Actionable Decisions
+  const actLiving = document.getElementById('radarActionLiving');
+  if (actLiving) {
+    const list = actions.financial_living || [];
+    if (list.length === 0) {
+      actLiving.innerHTML = '<div class="text-[11px] text-[var(--text-muted)]">Belum ada panduan finansial hidup.</div>';
+    } else {
+      actLiving.innerHTML = list.map(item => `
+        <div class="p-2 rounded bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-[var(--text-primary)] text-xs">${item.action}</span>
+            ${item.priority ? `<span class="text-[9px] font-mono-numbers font-bold px-1.5 py-0.2 rounded ${item.priority === 'HIGH' ? 'bg-red-950/60 text-red-400 border border-red-800' : 'bg-slate-800 text-slate-300'}">${item.priority}</span>` : ''}
+          </div>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">${item.detail}</p>
+        </div>
+      `).join('');
+    }
+  }
+
+  const actTrading = document.getElementById('radarActionTrading');
+  if (actTrading) {
+    const list = actions.trading_investment || [];
+    if (list.length === 0) {
+      actTrading.innerHTML = '<div class="text-[11px] text-[var(--text-muted)]">Belum ada panduan trading/investasi.</div>';
+    } else {
+      actTrading.innerHTML = list.map(item => `
+        <div class="p-2 rounded bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-emerald-400 text-xs">${item.strategy}</span>
+            ${item.stance ? `<span class="text-[9px] font-mono-numbers font-bold px-1.5 py-0.2 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800">${item.stance}</span>` : ''}
+          </div>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">${item.detail}</p>
+        </div>
+      `).join('');
+    }
+  }
+
+  const actBusiness = document.getElementById('radarActionBusiness');
+  if (actBusiness) {
+    const list = actions.real_business || [];
+    if (list.length === 0) {
+      actBusiness.innerHTML = '<div class="text-[11px] text-[var(--text-muted)]">Belum ada panduan bisnis riil.</div>';
+    } else {
+      actBusiness.innerHTML = list.map(item => `
+        <div class="p-2 rounded bg-[var(--bg-card)] border border-[var(--border-subtle)] space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-amber-400 text-xs">${item.action}</span>
+            ${item.risk_area ? `<span class="text-[9px] font-mono-numbers font-medium px-1.5 py-0.2 rounded bg-amber-950/60 text-amber-300 border border-amber-800">${item.risk_area}</span>` : ''}
+          </div>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed font-sans">${item.detail}</p>
+        </div>
+      `).join('');
+    }
+  }
+
+  if (window.lucide) lucide.createIcons();
 }
 
 // Component to render indicator card

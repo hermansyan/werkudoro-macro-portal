@@ -157,6 +157,15 @@
 
       <!-- Right Header Actions (Search & Refresh & User) -->
       <div class="flex items-center space-x-1.5 sm:space-x-3 flex-shrink-0">
+        <button 
+          onclick="switchMacroTab('radar')" 
+          id="btnQuickRadar" 
+          title="Buka Opportunity & Action Radar"
+          class="fin-button px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-mono-numbers flex items-center space-x-1 transition-colors"
+        >
+          <i data-lucide="radar" class="w-3.5 h-3.5 text-blue-400"></i>
+          <span class="hidden sm:inline font-bold">RADAR</span>
+        </button>
         <!-- Desktop Search Bar -->
         <div class="relative hidden sm:block w-44 lg:w-64">
           <input 
@@ -248,6 +257,10 @@
         <button onclick="switchMacroTab('nexus')" id="tabNavNexus" class="nav-tab-btn active px-3.5 py-2 flex items-center space-x-1.5">
           <i data-lucide="network" class="w-3.5 h-3.5 text-blue-500"></i>
           <span>GLOBAL NEXUS</span>
+        </button>
+        <button onclick="switchMacroTab('radar')" id="tabNavRadar" class="nav-tab-btn px-3.5 py-2 flex items-center space-x-1.5">
+          <i data-lucide="crosshair" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span>OPPORTUNITY RADAR</span>
         </button>
         <button onclick="switchMacroTab('indonesia')" id="tabNavIndonesia" class="nav-tab-btn px-3.5 py-2 flex items-center space-x-1.5">
           <i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-500"></i>
@@ -403,7 +416,199 @@
 
     </div>
 
-    <!-- VIEW 2: MAKRO INDONESIA -->
+    <!-- VIEW 2: OPPORTUNITY & ACTION RADAR (INSTITUTIONAL TERMINAL) -->
+    <div id="viewRadar" class="hidden space-y-3 sm:space-y-4">
+      <!-- Radar Header & Macro Regime Card -->
+      <section class="fin-card p-3 sm:p-4 border-l-4 border-l-cyan-500">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-[var(--border-subtle)] gap-2">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="crosshair" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider font-mono-numbers text-[var(--text-primary)]">Opportunity & Action Radar</h3>
+              <p class="text-[10px] text-[var(--text-muted)] font-mono-numbers">Sintesis Rezim Makro, Matriks Aset, Sektor Terdampak, & Panduan Eksekusi Herman</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 self-start sm:self-auto">
+            <span id="radarRegimeBadge" class="text-[11px] font-mono-numbers font-bold px-2.5 py-1 rounded bg-cyan-950/60 border border-cyan-800 text-cyan-300">
+              EXPANSIVE
+            </span>
+            <span class="text-[10px] font-mono-numbers px-2 py-0.5 rounded badge-neutral">QUANT-ENGINE</span>
+          </div>
+        </div>
+
+        <!-- Regime Description & Executive Strategy -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 text-xs mb-3">
+          <div class="lg:col-span-2 p-3 fin-subcard space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold font-mono-numbers text-cyan-400" id="radarRegimeTitle">Disinflationary Expansion / Goldilocks</span>
+              <span class="text-[10px] text-[var(--text-muted)] font-mono-numbers" id="radarTimestamp">Live Engine</span>
+            </div>
+            <p class="text-xs leading-relaxed text-[var(--text-secondary)] font-sans" id="radarRegimeDesc">
+              Memuat analisis rezim makro...
+            </p>
+            <div class="pt-2 border-t border-[var(--border-subtle)] flex items-start space-x-2">
+              <span class="text-[10px] font-mono-numbers text-emerald-400 font-bold uppercase flex-shrink-0">ARAH STRATEGIS:</span>
+              <span class="text-xs font-semibold text-[var(--text-primary)]" id="radarPrimaryRec">-</span>
+            </div>
+          </div>
+
+          <!-- Regime Telemetry Gauge / Metrics -->
+          <div class="p-3 fin-subcard flex flex-col justify-between space-y-2">
+            <div class="text-[10px] font-mono-numbers text-[var(--text-muted)] uppercase tracking-wider">Telemetri Kunci Rezim</div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono-numbers" id="radarKeyMetrics">
+              <div>
+                <span class="text-[var(--text-muted)] block text-[10px]">Real Rate US</span>
+                <span class="font-bold text-blue-400" id="radarMetricUSReal">+1.80%</span>
+              </div>
+              <div>
+                <span class="text-[var(--text-muted)] block text-[10px]">Real Rate ID</span>
+                <span class="font-bold text-emerald-400" id="radarMetricIDReal">+3.85%</span>
+              </div>
+              <div>
+                <span class="text-[var(--text-muted)] block text-[10px]">DXY Dollar</span>
+                <span class="font-bold text-amber-400" id="radarMetricDXY">101.03</span>
+              </div>
+              <div>
+                <span class="text-[var(--text-muted)] block text-[10px]">VIX Fear</span>
+                <span class="font-bold text-indigo-400" id="radarMetricVIX">14.87</span>
+              </div>
+            </div>
+            <div class="text-[9px] text-[var(--text-muted)] font-mono-numbers pt-1 border-t border-[var(--border-subtle)]">
+              Model kuadran: Inflasi vs Likuiditas vs Volatilitas
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Asset Impact Matrix (Institutional Terminal Table) -->
+      <section class="fin-card p-3 sm:p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center space-x-2">
+            <span class="w-1.5 h-3 bg-cyan-400"></span>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] font-mono-numbers">
+              Asset Impact Matrix (+100 Bullish s.d -100 Bearish)
+            </h4>
+          </div>
+          <span class="text-[10px] font-mono-numbers text-[var(--text-muted)]">Korelasi Multi-Aset</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono-numbers border-collapse">
+            <thead>
+              <tr class="border-b border-[var(--border-subtle)] text-[10px] text-[var(--text-muted)] uppercase">
+                <th class="py-2 px-2.5">Kelas Aset</th>
+                <th class="py-2 px-2.5">Kategori</th>
+                <th class="py-2 px-2.5 text-center">Score</th>
+                <th class="py-2 px-2.5">Stance</th>
+                <th class="py-2 px-2.5 min-w-[200px]">Driver Utama Makro</th>
+              </tr>
+            </thead>
+            <tbody id="radarMatrixTableBody" class="divide-y divide-[var(--border-subtle)]">
+              <tr>
+                <td colspan="5" class="py-4 text-center text-[var(--text-muted)]">Memuat matriks aset...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Winners & Losers Multi-Column Grid -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        <!-- Winners -->
+        <div class="fin-card p-3 sm:p-4 border-t-2 border-t-emerald-500 space-y-2.5">
+          <div class="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)]">
+            <div class="flex items-center space-x-1.5">
+              <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i>
+              <h4 class="text-xs font-bold uppercase font-mono-numbers text-emerald-400">Pihak / Sektor Diuntungkan (Winners)</h4>
+            </div>
+            <span class="text-[9px] font-mono-numbers px-1.5 py-0.5 rounded badge-gain">TAILWIND</span>
+          </div>
+          <div id="radarWinnersList" class="space-y-2">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+
+        <!-- Losers -->
+        <div class="fin-card p-3 sm:p-4 border-t-2 border-t-rose-500 space-y-2.5">
+          <div class="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)]">
+            <div class="flex items-center space-x-1.5">
+              <i data-lucide="trending-down" class="w-4 h-4 text-rose-400"></i>
+              <h4 class="text-xs font-bold uppercase font-mono-numbers text-rose-400">Pihak / Sektor Dirugikan (Losers)</h4>
+            </div>
+            <span class="text-[9px] font-mono-numbers px-1.5 py-0.5 rounded badge-loss">HEADWIND</span>
+          </div>
+          <div id="radarLosersList" class="space-y-2">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Actionable Decisions Framework (3 Pillars: Life, Trading, Real Business) -->
+      <section class="fin-card p-3 sm:p-4 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center space-x-2">
+            <span class="w-1.5 h-3 bg-blue-500"></span>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] font-mono-numbers">
+              Panduan Keputusan Strategis & Aksi Nyata (Actionable Matrix)
+            </h4>
+          </div>
+          <span class="text-[10px] font-mono-numbers text-[var(--text-muted)]">3 Pilar Eksekusi Herman</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <!-- Pillar 1: Financial & Living Decisions -->
+          <div class="p-3 fin-subcard border-l-2 border-l-blue-400 space-y-2 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="flex items-center space-x-1.5 text-blue-400 font-mono-numbers text-[11px] font-bold">
+                <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
+                <span>1. KEPUTUSAN HIDUP & KAS</span>
+              </div>
+              <p class="text-[10px] text-[var(--text-muted)] font-mono-numbers">Saving ratio, porsi kas, dan proteksi daya beli</p>
+              <div id="radarActionLiving" class="space-y-2 pt-1 text-xs">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+            <div class="pt-2 border-t border-[var(--border-subtle)] text-[9px] text-[var(--text-muted)] font-mono-numbers">
+              Pedoman: Alokasi Likuiditas Pribadi
+            </div>
+          </div>
+
+          <!-- Pillar 2: Trading & Investment Decisions -->
+          <div class="p-3 fin-subcard border-l-2 border-l-emerald-400 space-y-2 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="flex items-center space-x-1.5 text-emerald-400 font-mono-numbers text-[11px] font-bold">
+                <i data-lucide="line-chart" class="w-3.5 h-3.5"></i>
+                <span>2. KEPUTUSAN TRADING & PORTOFOLIO</span>
+              </div>
+              <p class="text-[10px] text-[var(--text-muted)] font-mono-numbers">Aset prioritas, strategi sizing, & durasi tenor</p>
+              <div id="radarActionTrading" class="space-y-2 pt-1 text-xs">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+            <div class="pt-2 border-t border-[var(--border-subtle)] text-[9px] text-[var(--text-muted)] font-mono-numbers">
+              Pedoman: Risk Regime & Sizing
+            </div>
+          </div>
+
+          <!-- Pillar 3: Real Business & Corporate Decisions -->
+          <div class="p-3 fin-subcard border-l-2 border-l-amber-400 space-y-2 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="flex items-center space-x-1.5 text-amber-400 font-mono-numbers text-[11px] font-bold">
+                <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
+                <span>3. KEPUTUSAN BISNIS RIIL</span>
+              </div>
+              <p class="text-[10px] text-[var(--text-muted)] font-mono-numbers">Ekspansi capex, struktur utang, & manajemen rantai pasok</p>
+              <div id="radarActionBusiness" class="space-y-2 pt-1 text-xs">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+            <div class="pt-2 border-t border-[var(--border-subtle)] text-[9px] text-[var(--text-muted)] font-mono-numbers">
+              Pedoman: Rantai Pasok & Valas
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
     <div id="viewIndonesia" class="hidden space-y-3 sm:space-y-4">
       <div class="flex items-center justify-between pb-2 border-b border-[#1c2028]">
         <div class="flex items-center space-x-2">
@@ -558,10 +763,14 @@
   </main>
 
   <!-- MOBILE BOTTOM DOCK NAVIGATION (100% CLEAN & FIT) -->
-  <nav class="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-50 bg-[#0c0e12]/95 backdrop-blur-md border-t border-[#1c2028] grid grid-cols-5 items-center px-1">
+  <nav class="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-50 bg-[#0c0e12]/95 backdrop-blur-md border-t border-[#1c2028] grid grid-cols-6 items-center px-0.5">
     <button onclick="switchMacroTab('nexus')" id="mobNavNexus" class="mobile-bottom-item active">
       <i data-lucide="git-merge" class="w-4 h-4 mb-0.5"></i>
       <span class="text-[9px]">Nexus</span>
+    </button>
+    <button onclick="switchMacroTab('radar')" id="mobNavRadar" class="mobile-bottom-item">
+      <i data-lucide="crosshair" class="w-4 h-4 mb-0.5 text-cyan-400"></i>
+      <span class="text-[9px]">Radar</span>
     </button>
     <button onclick="switchMacroTab('indonesia')" id="mobNavIndo" class="mobile-bottom-item">
       <i data-lucide="map-pin" class="w-4 h-4 mb-0.5"></i>
@@ -599,6 +808,6 @@
     </div>
   </footer>
 
-  <script src="/static/app.js?v=2.5.0"></script>
+  <script src="/static/app.js?v=2.6.0"></script>
 </body>
 </html>

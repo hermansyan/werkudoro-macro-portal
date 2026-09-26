@@ -17,7 +17,7 @@ Daftar backlog berikut adalah tugas-tugas terukur dan atomik untuk dieksekusi se
   - Algoritma penentuan Macro Regime (Expansive, Stagnant, Inflationary Shock, Tightening).
   - Matriks Dampak Aset: Forex, Crypto, Gold, Komoditas, Saham IHSG/Global.
   - Identifikasi Sektor/Entitas yang Diuntungkan (Winners) vs Dirugikan (Losers).
-- [ ] **TASK-004 (FRONTEND):** Bangun Modul Visual "Opportunity & Action Radar" pada Dashboard:
+- [x] **TASK-004 (FRONTEND):** Bangun Modul Visual "Opportunity & Action Radar" pada Dashboard:
   - Tampilan Institutional Terminal dengan tabular numbers.
   - Ringkasan Aksi: Keputusan Hidup (Saving/Cash ratio), Keputusan Trading (Aset berpotensi), Keputusan Bisnis Riil (Ekspansi/Hedging valas).
   - Tampilan responsif mobile thumb-dock tanpa horizontal sway.
